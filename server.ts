@@ -1,26 +1,14 @@
-import { createServer } from 'node:http';
+import express from 'express';
+const app = express();
 
-createServer(function (request, response) {
-    console.log('A requisição chegou em ' + request.url + 'e com o método ' + request.method);
-    if (request.url === '/api/heath' && request.method === 'GET') {
-        response.writeHead(
-            200,
-            { 'content-type': 'application/json' }
-        );
-        response.end(JSON.stringify({success: {
-            status: 200,
-            message: 'Ok.'
-        }}));
-        
-        return;
-    }
+app.get('/api/health', (req, res) => res.status(200).json({success: {
+        status: 200,
+        message: 'Servidor em execução.'
+}}));
 
-    response.writeHead(
-        404,
-        { 'content=type': 'application/json' }
-    );
-    response.end(JSON.stringify({error: {
-        status: 404,
-        message: 'Recurso não encontrado.'
-    }}));
-}).listen(3000);
+app.use((req, res) => res.status(404).json({error: {
+    status: 404,
+    message: 'Recurso não encontrado.'
+}}));
+
+app.listen(3000);
